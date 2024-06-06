@@ -1,9 +1,10 @@
 from random import randrange
 
 import streamlit as st
+from openai.error import InvalidRequestError, OpenAIError
 from streamlit_chat import message
 
-from .agi.chat_gpt import create_gpt_completion
+from .agi.chat_gpt import create_gpt_completion  # Asegúrate de que la ruta sea correcta
 from .stt import show_voice_input
 from .tts import show_audio_player
 
@@ -23,13 +24,12 @@ def show_text_input() -> None:
 
 
 def get_user_input():
-    match st.session_state.input_kind:
-        case st.session_state.locale.input_kind_1:
-            show_text_input()
-        case st.session_state.locale.input_kind_2:
-            show_voice_input()
-        case _:
-            show_text_input()
+    if st.session_state.input_kind == st.session_state.locale.input_kind_1:
+        show_text_input()
+    elif st.session_state.input_kind == st.session_state.locale.input_kind_2:
+        show_voice_input()
+    else:
+        show_text_input()
 
 
 def show_chat_buttons() -> None:
@@ -106,3 +106,4 @@ def show_conversation() -> None:
             {"role": "user", "content": st.session_state.user_text},
         ]
     show_gpt_conversation()
+
