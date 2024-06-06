@@ -4,7 +4,6 @@ from random import randrange
 import streamlit as st
 from src.styles.menu_styles import FOOTER_STYLES, HEADER_STYLES
 from src.utils.conversation import get_user_input, show_chat_buttons, show_conversation
-from src.utils.footer import show_donates, show_info
 from src.utils.helpers import get_files_in_dir, get_random_img
 from src.utils.lang import en, ru
 from streamlit_option_menu import option_menu
@@ -18,14 +17,13 @@ img_dir: Path = assets_dir / "img"
 tg_svg: Path = icons_dir / "tg.svg"
 
 # --- GENERAL SETTINGS ---
-PAGE_TITLE: str = "AI Talks"
+PAGE_TITLE: str = "ASISTENTE VIRTUAL "
 PAGE_ICON: str = "🤖"
-LANG_EN: str = "En"
-LANG_RU: str = "Ru"
+LANG_EN: str = "ES"
 AI_MODEL_OPTIONS: list[str] = [
     "gpt-4-1106-preview",
     "gpt-4-vision-preview",
-    "gpt-4",
+    "gpt-4o",
     "gpt-4-32k",
     "gpt-3.5-turbo-1106",
     "gpt-3.5-turbo",
@@ -40,7 +38,7 @@ with open(css_file) as f:
 
 selected_lang = option_menu(
     menu_title=None,
-    options=[LANG_EN, LANG_RU, ],
+    options=["en-ES"],
     icons=["globe2", "translate"],
     menu_icon="cast",
     default_index=0,
@@ -67,7 +65,6 @@ if "costs" not in st.session_state:
     st.session_state.costs = []
 if "total_tokens" not in st.session_state:
     st.session_state.total_tokens = []
-
 
 def main() -> None:
     c1, c2 = st.columns(2)
@@ -99,9 +96,9 @@ def main() -> None:
 
 def run_agi():
     match selected_lang:
-        case "En":
+        case "EN":
             st.session_state.locale = en
-        case "Ru":
+        case "RU":
             st.session_state.locale = ru
         case _:
             st.session_state.locale = en
@@ -119,17 +116,8 @@ def run_agi():
         orientation="horizontal",
         styles=FOOTER_STYLES
     )
-    match selected_footer:
-        case st.session_state.locale.footer_option0:
-            main()
-        case st.session_state.locale.footer_option1:
-            st.image(f"{img_dir}/{get_random_img(get_files_in_dir(img_dir))}")
-            show_info(tg_svg)
-        case st.session_state.locale.footer_option2:
-            show_donates()
-        case _:
-            show_info(tg_svg)
 
 
 if __name__ == "__main__":
     run_agi()
+    main()
